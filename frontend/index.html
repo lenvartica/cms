@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generation of Faith Ministry</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --light-bg: #ecf0f1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .main-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .auth-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .dashboard-container {
+            display: none;
+            min-height: 100vh;
+            background-color: var(--light-bg);
+        }
+
+        .sidebar {
+            background: white;
+            min-height: 100vh;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            padding: 20px 0;
+        }
+
+        .sidebar .nav-link {
+            color: var(--primary-color);
+            padding: 12px 20px;
+            border-radius: 0;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .content-area {
+            padding: 20px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        .livestream-container {
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .payment-form {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .payment-method {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-method:hover {
+            border-color: var(--secondary-color);
+        }
+
+        .payment-method.selected {
+            border-color: var(--secondary-color);
+            background-color: #f8f9fa;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Login/Register Container -->
+    <div id="authContainer" class="main-container">
+        <div class="auth-card">
+            <div class="text-center mb-4">
+                <i class="fas fa-church fa-3x text-primary mb-3"></i>
+                <h2>Generation of Faith Ministry</h2>
+                <p class="text-muted">Church Management System</p>
+            </div>
+
+            <!-- Login Form -->
+            <div id="loginForm">
+                <h4 class="mb-4">Sign In</h4>
+                <form onsubmit="handleLogin(event)">
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="loginEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Sign In</button>
+                </form>
+                <div class="text-center mt-3">
+                    <a href="#" onclick="showRegisterForm()">Create Account</a>
+                </div>
+            </div>
+
+            <!-- Register Form -->
+            <div id="registerForm" class="hidden">
+                <h4 class="mb-4">Create Account</h4>
+                <form onsubmit="handleRegister(event)">
+                    <div class="mb-3">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="registerName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="registerEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Phone</label>
+                        <input type="tel" class="form-control" id="registerPhone">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" id="registerPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control" id="confirmPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Create Account</button>
+                </form>
+                <div class="text-center mt-3">
+                    <a href="#" onclick="showLoginForm()">Back to Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Container -->
+    <div id="dashboardContainer" class="dashboard-container">
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <i class="fas fa-church me-2"></i>
+                    Generation of Faith Ministry
+                </a>
+                <div class="d-flex align-items-center">
+                    <span class="text-white me-3" id="userName">User</span>
+                    <button class="btn btn-outline-light btn-sm" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-md-3 col-lg-2 sidebar">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#" onclick="showPage('dashboard')">
+                                <i class="fas fa-home me-2"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showPage('livestream')">
+                                <i class="fas fa-video me-2"></i>Livestream
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showPage('giving')">
+                                <i class="fas fa-hand-holding-usd me-2"></i>Give
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showPage('events')">
+                                <i class="fas fa-calendar me-2"></i>Events
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showPage('profile')">
+                                <i class="fas fa-user me-2"></i>Profile
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Content Area -->
+                <div class="col-md-9 col-lg-10 content-area">
+                    <!-- Dashboard Page -->
+                    <div id="dashboardPage" class="page-content">
+                        <h2 class="mb-4">Welcome to Generation of Faith Ministry</h2>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-3 mb-3">
+                                <div class="stats-card">
+                                    <i class="fas fa-users fa-2x mb-2"></i>
+                                    <h4 id="memberCount">0</h4>
+                                    <p>Members</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="stats-card">
+                                    <i class="fas fa-calendar-check fa-2x mb-2"></i>
+                                    <h4 id="eventCount">0</h4>
+                                    <p>Upcoming Events</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="stats-card">
+                                    <i class="fas fa-dollar-sign fa-2x mb-2"></i>
+                                    <h4 id="givingTotal">$0</h4>
+                                    <p>Total Giving</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="stats-card">
+                                    <i class="fas fa-video fa-2x mb-2"></i>
+                                    <h4 id="livestreamCount">0</h4>
+                                    <p>Livestreams</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>Next Service</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p><strong>Sunday Service</strong></p>
+                                        <p>Sunday, 10:00 AM</p>
+                                        <button class="btn btn-primary" onclick="showPage('livestream')">
+                                            <i class="fas fa-video me-2"></i>Watch Live
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>Quick Actions</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="d-grid gap-2">
+                                            <button class="btn btn-outline-primary" onclick="showPage('giving')">
+                                                <i class="fas fa-hand-holding-usd me-2"></i>Give Online
+                                            </button>
+                                            <button class="btn btn-outline-primary" onclick="showPage('events')">
+                                                <i class="fas fa-calendar me-2"></i>View Events
+                                            </button>
+                                            <button class="btn btn-outline-primary" onclick="showPage('livestream')">
+                                                <i class="fas fa-video me-2"></i>Watch Services
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Livestream Page -->
+                    <div id="livestreamPage" class="page-content hidden">
+                        <h2 class="mb-4">Livestream Services</h2>
+                        
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>Current Livestream</h5>
+                                    </div>
+                                    <div class="p-0">
+                                        <div class="livestream-container">
+                                            <div class="text-center">
+                                                <i class="fas fa-play-circle fa-4x mb-3"></i>
+                                                <h4>Sunday Service - Live</h4>
+                                                <p>Service starts at 10:00 AM</p>
+                                                <button class="btn btn-danger btn-lg" onclick="startLivestream()">
+                                                    <i class="fas fa-play me-2"></i>Start Stream
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>Chat</h5>
+                                    </div>
+                                    <div class="card-body" style="height: 350px; overflow-y: auto;">
+                                        <div id="chatMessages">
+                                            <p class="text-muted">Join the conversation...</p>
+                                        </div>
+                                        <div class="input-group mt-3">
+                                            <input type="text" class="form-control" id="chatInput" placeholder="Type a message...">
+                                            <button class="btn btn-primary" onclick="sendMessage()">
+                                                <i class="fas fa-paper-plane"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>Past Services</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row" id="pastServices">
+                                            <div class="col-md-4 mb-3">
+                                                <div class="card">
+                                                    <div class="card-body text-center">
+                                                        <i class="fas fa-video fa-2x text-primary mb-2"></i>
+                                                        <h6>Last Sunday Service</h6>
+                                                        <p class="text-muted">December 3, 2024</p>
+                                                        <button class="btn btn-sm btn-outline-primary">Watch Replay</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Giving Page -->
+                    <div id="givingPage" class="page-content hidden">
+                        <h2 class="mb-4">Give Online</h2>
+                        
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>Make a Donation</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form onsubmit="processPayment(event)">
+                                            <div class="mb-3">
+                                                <label class="form-label">Donation Type</label>
+                                                <select class="form-select" id="donationType" required>
+                                                    <option value="">Select Type</option>
+                                                    <option value="tithe">Tithe</option>
+                                                    <option value="offering">Offering</option>
+                                                    <option value="building">Building Fund</option>
+                                                    <option value="missions">Missions</option>
+                                                    <option value="other">Other</option>
+                                                </select>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label class="form-label">Amount ($)</label>
+                                                <input type="number" class="form-control" id="donationAmount" step="0.01" min="1" required>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Payment Method</label>
+                                                <div class="payment-method" onclick="selectPaymentMethod(this, 'card')">
+                                                    <i class="fas fa-credit-card me-2"></i> Credit/Debit Card
+                                                </div>
+                                                <div class="payment-method" onclick="selectPaymentMethod(this, 'bank')">
+                                                    <i class="fas fa-university me-2"></i> Bank Transfer
+                                                </div>
+                                                <div class="payment-method" onclick="selectPaymentMethod(this, 'paypal')">
+                                                    <i class="fab fa-paypal me-2"></i> PayPal
+                                                </div>
+                                            </div>
+
+                                            <div id="cardDetails" class="hidden">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Card Number</label>
+                                                    <input type="text" class="form-control" placeholder="1234 5678 9012 3456">
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="form-label">Expiry Date</label>
+                                                        <input type="text" class="form-control" placeholder="MM/YY">
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="form-label">CVV</label>
+                                                        <input type="text" class="form-control" placeholder="123">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Email (for receipt)</label>
+                                                <input type="email" class="form-control" id="donorEmail" required>
+                                            </div>
+
+                                            <button type="submit" class="btn btn-primary w-100">
+                                                <i class="fas fa-lock me-2"></i>Secure Payment
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>Giving Impact</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <h6>This Month</h6>
+                                            <h4 class="text-success">$12,450</h4>
+                                        </div>
+                                        <div class="mb-3">
+                                            <h6>Year to Date</h6>
+                                            <h4 class="text-primary">$148,500</h4>
+                                        </div>
+                                        <div class="mb-3">
+                                            <h6>Goal Progress</h6>
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar" style="width: 75%">75%</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Events Page -->
+                    <div id="eventsPage" class="page-content hidden">
+                        <h2 class="mb-4">Upcoming Events</h2>
+                        
+                        <div class="row" id="eventsList">
+                            <div class="col-md-4 mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5>Sunday Service</h5>
+                                        <p class="text-muted">Every Sunday at 10:00 AM</p>
+                                        <p>Main Sanctuary</p>
+                                        <button class="btn btn-primary btn-sm">View Details</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5>Bible Study</h5>
+                                        <p class="text-muted">Wednesday at 7:00 PM</p>
+                                        <p>Fellowship Hall</p>
+                                        <button class="btn btn-primary btn-sm">View Details</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5>Youth Group</h5>
+                                        <p class="text-muted">Friday at 6:00 PM</p>
+                                        <p>Youth Center</p>
+                                        <button class="btn btn-primary btn-sm">View Details</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Admin Dashboard Page -->
+                    <div id="adminPage" class="page-content hidden">
+                        <!-- Admin content will be loaded by JavaScript -->
+                    </div>
+
+                    <!-- User Management Page -->
+                    <div id="userManagementPage" class="page-content hidden">
+                        <!-- User management content will be loaded by JavaScript -->
+                    </div>
+
+                    <!-- Settings Page -->
+                    <div id="settingsPage" class="page-content hidden">
+                        <!-- Settings content will be loaded by JavaScript -->
+                    </div>
+
+                    <!-- Profile Page -->
+                    <div id="profilePage" class="page-content hidden">
+                        <h2 class="mb-4">My Profile</h2>
+                        
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>Personal Information</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form onsubmit="updateProfile(event)">
+                                            <div class="mb-3">
+                                                <label class="form-label">Full Name</label>
+                                                <input type="text" class="form-control" id="profileName" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Email</label>
+                                                <input type="email" class="form-control" id="profileEmail" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Phone</label>
+                                                <input type="tel" class="form-control" id="profilePhone">
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Update Profile</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>Account Settings</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <button class="btn btn-outline-primary w-100 mb-2">
+                                                <i class="fas fa-key me-2"></i>Change Password
+                                            </button>
+                                            <button class="btn btn-outline-danger w-100">
+                                                <i class="fas fa-trash me-2"></i>Delete Account
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
